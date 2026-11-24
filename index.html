@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đề tài 3 - Tìm đường đi bằng Leaflet</title>
+  <link rel="stylesheet" href="css/leaflet.css" />
+  <link rel="stylesheet" href="css/leaflet-routing-machine.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="file-warning" class="file-warning" hidden>
+    ⚠️ Bạn đang mở trực tiếp bằng <code>file://</code> nên trình duyệt chặn module JavaScript.
+    Hãy chạy bằng <b>Live Server</b> (VS Code) hoặc lệnh <code>python -m http.server 8080</code>
+    rồi mở <code>http://localhost:8080</code>.
+  </div>
+  <script>
+    if (location.protocol === "file:") document.getElementById("file-warning").hidden = false;
+  </script>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h1>🗺️ Tìm đường đi bằng Leaflet</h1>
+        <button id="sidebar-close" class="btn-icon" title="Đóng bảng">✕</button>
+      </div>
+      <p class="muted subtitle">Leaflet + OSRM Routing + Haversine</p>
+
+      <section>
+        <h2>1. Chế độ thao tác</h2>
+        <div class="mode-group">
+          <label><input type="radio" name="mode" value="nearest" checked> 🏬 Tìm cửa hàng gần nhất từ 1 điểm</label>
+          <label><input type="radio" name="mode" value="twoPoints"> 📍 Tuyến đường giữa 2 điểm</label>
+          <label><input type="radio" name="mode" value="multiPoints"> 🚩 Lộ trình nhiều điểm trung gian</label>
+        </div>
+
+        <div class="field-row">
+          <label for="travel-profile">Phương tiện:</label>
+          <select id="travel-profile" class="select-input">
+            <option value="driving">🚗 Ô tô / Xe máy</option>
+            <option value="bike">🚲 Xe đạp</option>
+            <option value="walking">🚶 Đi bộ</option>
+          </select>
+        </div>
+
+        <div class="btn-grid">
+          <button id="btn-gps" class="btn btn-emerald">📍 Vị trí của tôi</button>
+          <button id="btn-clear" class="btn btn-danger">🗑️ Xóa toàn bộ</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>2. Nhập tọa độ trực tiếp</h2>
+        <div class="input-with-button">
+          <input id="coord-input" type="text" placeholder="VD: 10.7769, 106.7009 hoặc gõ tên..." autocomplete="off" />
+        </div>
+        <ul id="coord-suggestions" class="suggestions"></ul>
+        <div class="hint muted">Click bản đồ để lấy tọa độ, hoặc gõ tên địa danh để chọn gợi ý.</div>
+        <div class="btn-grid">
+          <button id="btn-add-coord" class="btn btn-primary">➕ Thêm vào lộ trình</button>
+          <button id="btn-add-store" class="btn btn-secondary">🏬 Tạo cửa hàng mới</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>3. Danh sách cửa hàng (<span id="store-count">0</span>)</h2>
+        <div class="hint muted mb-1">Click vào cửa hàng để xem vị trí trên bản đồ.</div>
+        <ul id="store-list" class="store-list"></ul>
+      </section>
+
+      <section>
+        <div class="section-header-flex">
+          <h2>4. Các điểm lộ trình (<span id="point-count">0</span>)</h2>
+          <button id="btn-optimize" class="btn-link" title="Tối ưu thứ tự điểm ghé thăm ngắn nhất">⚡ Tối ưu (TSP)</button>
+        </div>
+        <ul id="point-list" class="point-list"></ul>
+      </section>
+
+      <section>
+        <h2>5. Chi tiết chỉ đường</h2>
+        <div id="route-info" class="route-info muted">Chưa có đường đi. Click lên bản đồ hoặc dùng định vị để bắt đầu.</div>
+      </section>
+    </aside>
+
+    <button id="sidebar-toggle" class="sidebar-toggle" title="Mở bảng điều khiển">☰ Điều khiển</button>
+    <main id="map"></main>
+  </div>
+
+  <script src="js/leaflet.js"></script>
+  <script src="js/leaflet-routing-machine.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
